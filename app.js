@@ -10,8 +10,7 @@ require("./db");
 
 const cors = require("cors");
 app.use(cors({ origin: ["http://localhost:5173", "http://example.com"] }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
 
 // ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
 require("./config")(app);
@@ -31,7 +30,6 @@ const routinesRoutes = require("./routes/routines.routes");
 app.use("/routines", routinesRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
-//require("./error-handling")(app);
 const { errorHandler, notFoundHandler } = require("./error-handling/error-handling");
 app.use(notFoundHandler);
 app.use(errorHandler);
