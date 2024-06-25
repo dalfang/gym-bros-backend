@@ -9,6 +9,6 @@ const mealSchema = new Schema({
     ingredients: [{ type: String }],
   }, { timestamps: true });
 
-const User = model("Meal", mealSchema);
+const Meal = model("Meal", mealSchema);
 
 module.exports = Meal;
