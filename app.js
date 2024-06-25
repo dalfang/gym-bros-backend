@@ -30,7 +30,7 @@ const routinesRoutes = require("./routes/routines.routes");
 app.use("/routines", routinesRoutes);
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
-const { errorHandler, notFoundHandler } = require("./error-handling/error-handling");
+const { errorHandler, notFoundHandler } = require("./error-handling/index.js");
 app.use(notFoundHandler);
 app.use(errorHandler);
 
