@@ -8,6 +8,6 @@ const routineSchema = new Schema({
     totalDuration: {type: Number}
   }, { timestamps: true });
   
-const User = model("Meal", mealSchema);
+const Routine = model("Routine", routineSchema);
 
-module.exports = Meal;
+module.exports = Routine;
