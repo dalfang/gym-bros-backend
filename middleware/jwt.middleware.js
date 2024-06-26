@@ -2,20 +2,17 @@ const jwt = require("jsonwebtoken");
 
 const isAuthenticated = (req, res, next) => {
     try {
-<<<<<<< HEAD
-        if(req.header.authorization) {
-=======
-        if(req.headers.authorization) {
->>>>>>> origin/main
-            const token = req.headers.authorization;
-            const theDecodeToken = jwt.verify(token, process.env.TOKEN_SECRET);
-            req.payload = theDecodeToken;
+        const authHeader = req.header.authorization;
+        if(authHeader && authHeader.startsWith("Bearer")) {
+            const token = authHeader.split(" ")[1];
+            const decodeToken = jwt.verify(token, process.env.TOKEN_SECRET);
+            req.payload = decodeToken;
             next()
         } else {
             next();
         }
     } catch (error) {
-        res.status(401).json("token not provided or not valid");
+        res.status(401).json("Token not provided or not valid");
     }
 };
 

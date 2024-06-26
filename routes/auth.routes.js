@@ -2,6 +2,7 @@ const router = require("express").Router();
 // const { rawListeners } = require("../app");
 const UserModel = require("../models/User.model");
 const bcryptjs = require("bcryptjs");
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 router.post("/signup", async (req, res) => {
   try {
@@ -15,34 +16,36 @@ router.post("/signup", async (req, res) => {
     } else {
       const salt = bcryptjs.genSaltSync(10);
       const hashedPassword = bcryptjs.hashSync(req.body.password, salt);
-      const userToCreate = {
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-      };
-      const createUser = await UserModel.create({
+      const createdUser = await UserModel.create({
         ...req.body,
         password: hashedPassword,
       });
-      res.status(201).json(createUser);
+      console.log("User created", createdUser);
+      res.status(201).json(createdUser);
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
   }
 });
 
 router.post("/login", async (req, res) => {
   try {
-    const foundUser = await UserModel.findOne({
-      email: rawListeners.body.email,
-    });
+    const foundUser = await UserModel.findOne({ email: raq.body.email });
     if (foundUser) {
       const doesPasswordMatch = bcryptjs.compareSync(
         req.body.password,
         foundUser.password
       );
       if (doesPasswordMatch) {
-        res.status(200).json({ message: "Login successful", user: foundUser });
+        const loggedInUser = {
+          _id: foundUser._id,
+          username: foundUser.username,
+        };
+        const authToken = jwt.sign( loggedInUser, process.env.TOKEN_SECRET, 
+          { algorithm: "HS256", expiresIn: "6h" }
+      );
+        res.status(200).json({ message: "Login successful", authToken });
       } else {
         res.status(500).json({ errorMessage: "Invalid password" });
       }
@@ -51,18 +54,37 @@ router.post("/login", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
   }
 });
 
-router.patch("/update-user/:id", async (req, res) => {
+router.patch("/update-user/:id", isAuthenticated, async (req, res) => {
   const { id } = req.params;
+
   try {
-    const updatedUser = await UserModel.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedUser = await UserModel.findByIdAndUpdate(id, req.body, { new: true });
     res.status(201).json(updatedUser);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+});
+
+router.get("/profile/:userId", isAuthenticated, async (req, res) => {
+  try {
+    const currentUser = await UserModel.findById(req.params.userId);
+    res.status(200).json(currentUser);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+});
+
+router.get("/verify", isAuthenticated, (req, res) => {
+  if (req.payload) {
+    res.status(200).json({ message: "Token valid", user: req.payload });
+  } else {
+    res.status(401).json({ message: "Invalid headers" });
   }
 });
 
