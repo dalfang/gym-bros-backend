@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 
 const isAuthenticated = (req, res, next) => {
     try {
-        if(req.header.authorization) {
-            const token = req.header.authorization;
+        if(req.headers.authorization) {
+            const token = req.headers.authorization;
             const theDecodeToken = jwt.verify(token, process.env.TOKEN_SECRET);
             req.payload = theDecodeToken;
             next()
@@ -15,6 +15,6 @@ const isAuthenticated = (req, res, next) => {
     }
 };
 
-mpdule.exports = {
+module.exports = {
     isAuthenticated,
 };
