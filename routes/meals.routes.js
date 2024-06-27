@@ -19,6 +19,15 @@ router.get("/all-meals", async (req, res) => {
   }
 });
 
+router.get("/one-meal/:mealId", async (req, res) => {
+  try {
+    const oneMeal = await Meal.findById(req.params.mealId);
+    res.status(200).json(oneMeal);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 router.patch("/update-meal/:mealId", async (req, res) => {
   try {
     const updatedMeal = await Meal.findByIdAndUpdate(

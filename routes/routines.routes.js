@@ -1,4 +1,4 @@
-const router = require ("express").Router();
+const router = require("express").Router();
 const Routine = require("../models/Routine.model");
 
 router.post("/create-routine", async (req, res) => {
@@ -19,6 +19,15 @@ router.get("/all-routines", async (req, res) => {
   }
 });
 
+router.get("/one-routine/:routineId", async (req, res) => {
+  try {
+    const oneRoutine = await Routine.findById(req.params.routineId);
+    res.status(200).json(oneRoutine);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 router.patch("/update-routine/:routineId", async (req, res) => {
   try {
     const updatedRoutine = await Routine.findByIdAndUpdate(
@@ -33,14 +42,12 @@ router.patch("/update-routine/:routineId", async (req, res) => {
 });
 
 router.delete("/delete-routine/routineId", async (req, res) => {
-    try {
-        const deletedRoutine = await Routine.findByIdAndDelete(req.params.mealId);
-        res.status(200).json({message: "Routine removed successfully"});
-    } catch (error) {
-        console.log(error);
-    }
-})
-
-
+  try {
+    const deletedRoutine = await Routine.findByIdAndDelete(req.params.mealId);
+    res.status(200).json({ message: "Routine removed successfully" });
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 module.exports = router;
