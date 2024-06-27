@@ -3,8 +3,15 @@ const UserModel = require("../models/User.model");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
+const uploader = require('../middleware/cloudinary.config.js');
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", uploader.single("imageUrl"), async (req, res) => {
+  let userImage;
+  if (req.file) {
+    userImage = req.file.path;
+  }
+  console.log("here is the file from cloudinary", req.file);
+
   try {
     const foundUser = await UserModel.findOne({
       $or: [{ username: req.body.username }, { email: req.body.email }],
@@ -18,7 +25,8 @@ router.post("/signup", async (req, res) => {
       const hashedPassword = bcryptjs.hashSync(req.body.password, salt);
       const createdUser = await UserModel.create({
         ...req.body,
-        password: hashedPassword
+        password: hashedPassword,
+        userImage
       });
       console.log("User created", createdUser);
       res.status(201).json(createdUser);
