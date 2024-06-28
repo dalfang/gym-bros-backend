@@ -19,6 +19,7 @@ const userSchema = new Schema(
       default:
         "https://unsplash.com/photos/red-texas-store-signage-BXXYZ4HtGxU",
     },
+    routines: [{ type: Schema.Types.ObjectId, ref: 'Routine' }] 
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
