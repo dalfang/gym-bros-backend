@@ -23,7 +23,7 @@ router.get("/all-meals", async (req, res) => {
 router.get('/your-meal/:userId', async (req, res) =>{
   const { userId } = req.params;
   try {
-    const allMeals = await Meal.find ({ userId });
+    const allMeals = await Meal.find ({ userId }).populate('owner');
     res.json(allMeals);
   } catch (error) {
     res.json(error)
