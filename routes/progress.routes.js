@@ -1,55 +1,83 @@
-const router = require ("express").Router();
+const router = require("express").Router();
 const Progress = require("../models/Progress.model");
+const UserModel = require("../models/User.model");
 
-router.post("/create-progress", async (req, res) => {
+
+// Create progress
+router.post("/create-progress", async (req, res, next) => {
   try {
-    const createdProgress = await Progress.create(req.body);
+    const progressData = { ...req.body };
+    const createdProgress = await Progress.create(progressData);
     res.status(201).json(createdProgress);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({ message: "Failed to create progress" });
   }
 });
 
-router.get("/all-progress", async (req, res) => {
+// Get user progress
+router.get("/user-progress/:userId", async (req, res) => {
+  const { userId } = req.params;
   try {
-    const allProgress = await Progress.find();
+    const userProgress = await Progress.find({ owner: userId }).populate('routines').populate('meals').populate('owner');
+    res.status(200).json(userProgress);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching user progress" });
+  }
+});
+
+// Get all progress
+router.get("/all-progress", async (req, res, next) => {
+  try {
+    const allProgress = await Progress.find().populate('routines').populate('meals').populate('owner');
     res.status(200).json(allProgress);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({ message: "Error fetching progress" });
   }
 });
 
+// Get one progress
 router.get("/one-progress/:progressId", async (req, res) => {
   try {
-    const oneProgress = await Meal.findById(req.params.progressId);
-    res.status(200).json(oneProgress);
+    const progress = await Progress.findById(req.params.progressId).populate('routines').populate('meals').populate('owner');
+    if (!progress) {
+      return res.status(404).json({ message: "Progress not found" });
+    }
+    res.status(200).json(progress);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({ message: "Error fetching progress" });
   }
 });
 
+// Update progress
 router.patch("/update-progress/:progressId", async (req, res) => {
   try {
-    const updatedProgress = await Progress.findByIdAndUpdate(
-      req.params.progressId,
-      req.body,
-      { new: true }
-    );
-    res.status(201).json(updatedProgress);
+    const updatedProgress = await Progress.findByIdAndUpdate(req.params.progressId, req.body, { new: true }).populate('routines').populate('meals').populate('owner');
+    if (!updatedProgress) {
+      return res.status(404).json({ message: "Progress not found" });
+    }
+    res.status(200).json(updatedProgress);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({ message: "Error updating progress" });
   }
 });
 
-router.delete("/delete-progress/progressId", async (req, res) => {
-    try {
-        const deletedProgress = await Meal.findByIdAndDelete(req.params.progressId);
-        res.status(200).json({message: "Progress removed successfully"});
-    } catch (error) {
-        console.log(error);
+// Delete progress
+router.delete("/delete-progress/:progressId", async (req, res) => {
+  try {
+    const deletedProgress = await Progress.findByIdAndDelete(req.params.progressId);
+    if (!deletedProgress) {
+      return res.status(404).json({ message: "Progress not found" });
     }
-})
-
-
+    res.status(200).json({ message: "Progress removed successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error deleting progress" });
+  }
+});
 
 module.exports = router;

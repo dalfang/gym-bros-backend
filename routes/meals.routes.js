@@ -12,12 +12,23 @@ router.post("/create-meal", async (req, res) => {
 
 router.get("/all-meals", async (req, res) => {
   try {
-    const allMeals = await Meal.find();
+    const allMeals = await Meal.find().populate('owner'); 
     res.status(200).json(allMeals);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch all meals" });
   }
 });
+
+router.get('/your-meal/:userId', async (req, res) =>{
+  const { userId } = req.params;
+  try {
+    const allMeals = await Meal.find ({ userId });
+    res.json(allMeals);
+  } catch (error) {
+    res.json(error)
+  }
+})
 
 router.get("/one-meal/:mealId", async (req, res) => {
   try {

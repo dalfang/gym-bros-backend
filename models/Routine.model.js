@@ -2,9 +2,9 @@ const { Schema, model } = require('mongoose');
 
 const routineSchema = new Schema({
     name: { type: String, required: true },
-    //user: { type: Schema.Types.ObjectId, ref: 'UserModel', required: true },
+    owner: { type: Schema.ObjectId, ref: 'UserModel'},
     workout: { type: String, required: true },
-    bodyPart: { type: String, required: true },
+    bodyPart: { type: String},
     totalDuration: {type: Number}
   }, { timestamps: true });
   

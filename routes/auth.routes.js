@@ -85,14 +85,24 @@ router.patch("/update-user/:id", async (req, res) => {
   }
 });
 
-
+//GET USER HERE
 router.get("/profile/:userId", async (req, res) => {
   try {
     const currentUser = await UserModel.findById(req.params.userId);
-    console.log("current user", currentUser);
+   console.log("current user", currentUser);
     res.status(200).json(currentUser);
   } catch (error) {
     console.log(error);
+  }
+});
+
+router.get('/all-users', async (req, res) => {
+  try {
+    const allUsers = await UserModel.find();
+    res.status(200).json(allUsers);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errorMessage: 'An error occurred while fetching all users' });
   }
 });
 

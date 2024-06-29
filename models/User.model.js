@@ -16,17 +16,22 @@ const userSchema = new Schema(
     },
     userImage: {
       type: String,
-      default:
-        "https://unsplash.com/photos/red-texas-store-signage-BXXYZ4HtGxU",
+      // default if user doesnt provide the user photo
+      default: "https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
-    routines: [{ type: Schema.Types.ObjectId, ref: 'Routine' }] 
-  },
+    //routines: { 
+    //  type: Schema.ObjectId, 
+    //  ref: 'Routine' },
+    //meals: {
+    //  type: Schema.ObjectId, 
+    //  ref: 'Meal' },
+  }, 
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );
 
-const UserModel = model("User", userSchema);
+const UserModel = model("UserModel", userSchema);
 
 module.exports = UserModel;
