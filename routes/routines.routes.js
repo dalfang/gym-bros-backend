@@ -1,11 +1,13 @@
 const router = require("express").Router();
 const Routine = require("../models/Routine.model");
+const mongoose = require('mongoose');
+
 
 // Create routine
 router.post("/create-routine", async (req, res) => {
   try {
-    const routineData = { ...req.body };
-    const createdRoutine = await Routine.create(routineData);
+    const { userId, ...routineData } = req.body; 
+    const createdRoutine = await Routine.create({ ...routineData, owner: userId }); 
     res.status(201).json(createdRoutine);
   } catch (error) {
     console.error(error);
@@ -23,6 +25,30 @@ router.get("/all-routines", async (req, res) => {
     res.status(500).json({ message: "Error fetching routines" });
   }
 });
+
+// Get all routines for a specific user
+router.get('/user-routine/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { date } = req.query;
+    let query = { owner: userId };
+
+    if (date) {
+      const startDate = new Date(date);
+      const endDate = new Date(date);
+      endDate.setDate(startDate.getDate() + 1);
+
+      query.date = { $gte: startDate, $lt: endDate };
+    }
+    const userRoutines = await Routine.find(query).populate('owner');
+    console.log("Fetched routine:", userRoutines);
+    res.status(200).json(userRoutines);
+  } catch (error) {
+    console.error("Error fetching user meals:", error);
+    res.status(500).json({ message: 'Error fetching user routines', error });
+  }
+});
+
 
 // Get one routine
 router.get("/one-routine/:routineId", async (req, res) => {
@@ -67,18 +93,6 @@ router.delete("/delete-routine/:routineId", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error deleting routine" });
-  }
-});
-
-// Get all routines for a specific user
-router.get('/user-routine/:userId', async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const userRoutines = await Routine.find({ owner: userId }).populate('owner');
-    res.status(200).json(userRoutines);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error fetching user routines', error });
   }
 });
 

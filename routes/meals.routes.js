@@ -1,15 +1,21 @@
 const router = require("express").Router();
 const Meal = require("../models/Meal.model");
+const mongoose = require('mongoose');
 
+
+//Create meal
 router.post("/create-meal", async (req, res) => {
   try {
-    const createdMeal = await Meal.create(req.body);
+    const { userId, ...mealData } = req.body; 
+    const createdMeal = await Meal.create({ ...mealData, owner: userId }); 
     res.status(201).json(createdMeal);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({ message: "Failed to create meal" });
   }
 });
 
+//Get all meals
 router.get("/all-meals", async (req, res) => {
   try {
     const allMeals = await Meal.find().populate('owner'); 
@@ -20,16 +26,30 @@ router.get("/all-meals", async (req, res) => {
   }
 });
 
-router.get('/your-meal/:userId', async (req, res) =>{
-  const { userId } = req.params;
+//Get all meals for a specific user
+router.get('/your-meal/:userId', async (req, res) => {
   try {
-    const allMeals = await Meal.find ({ userId }).populate('owner');
-    res.json(allMeals);
-  } catch (error) {
-    res.json(error)
-  }
-})
+    const { userId } = req.params;
+    const { date } = req.query
+    let query = { owner: userId };
 
+    if (date) {
+      const startDate = new Date(date);
+      const endDate = new Date(date);
+      endDate.setDate(startDate.getDate() + 1);
+
+      query.date = { $gte: startDate, $lt: endDate };
+    }
+    const userMeals = await Meal.find(query).populate('owner');
+    console.log("Fetched meals:", userMeals);
+    res.status(200).json(userMeals);
+  } catch (error) {
+    console.error("Error fetching user meals:", error);
+    res.status(500).json({ message: "Failed to fetch user meals", error });
+  }
+});
+
+// Get one meal
 router.get("/one-meal/:mealId", async (req, res) => {
   try {
     const oneMeal = await Meal.findById(req.params.mealId);
@@ -39,6 +59,7 @@ router.get("/one-meal/:mealId", async (req, res) => {
   }
 });
 
+// Update meal
 router.patch("/update-meal/:mealId", async (req, res) => {
   try {
     const updatedMeal = await Meal.findByIdAndUpdate(
@@ -52,6 +73,7 @@ router.patch("/update-meal/:mealId", async (req, res) => {
   }
 });
 
+// Delete meal
 router.delete("/delete-meal/mealId", async (req, res) => {
     try {
         const deletedMeal = await Meal.findByIdAndDelete(req.params.mealId);
