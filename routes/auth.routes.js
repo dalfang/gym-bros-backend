@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const UserModel = require("../models/User.model");
+const RoutineModel = require("../models/Routine.model");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
@@ -85,14 +86,26 @@ router.patch("/update-user/:id", async (req, res) => {
   }
 });
 
-
-router.get("/profile/:userId", async (req, res) => {
+//GET USER HERE
+router.get("/profile", isAuthenticated, async (req, res) => {
   try {
-    const currentUser = await UserModel.findById(req.params.userId);
+    const currentUser = await UserModel.findById(req.payload._id);
+    const currentRoutine = await RoutineModel.find({ owner: req.payload._id });
     console.log("current user", currentUser);
-    res.status(200).json(currentUser);
+    console.log("current routine", currentRoutine);
+    res.status(200).json({currentUser, currentRoutine});
   } catch (error) {
     console.log(error);
+  }
+});
+
+router.get('/all-users', async (req, res) => {
+  try {
+    const allUsers = await UserModel.find();
+    res.status(200).json(allUsers);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errorMessage: 'An error occurred while fetching all users' });
   }
 });
 

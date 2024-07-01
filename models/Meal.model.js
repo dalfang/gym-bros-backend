@@ -1,13 +1,17 @@
 const { Schema, model } = require('mongoose');
 
 const mealSchema = new Schema({
-    mealName: { type: String, 
-        enum: ["Breakfast", "Lunch", "Dinner", "Snack", "Other"]
+    name: { 
+        type: String, 
+        enum: ["Breakfast", "Lunch", "Dinner", "Snack", "Other"],
+        required: true, 
     },
     description: { type: String },
     calories: { type: Number },
+    owner: { type: Schema.ObjectId, ref: 'UserModel' }, 
     ingredients: [{ type: String }],
-  }, { timestamps: true });
+    date: { type: Date, required: true },
+}, { timestamps: true });
 
 const Meal = model("Meal", mealSchema);
 

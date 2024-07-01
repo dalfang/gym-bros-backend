@@ -44,6 +44,11 @@ const progressSchema = new Schema({
     default: Date.now,
   },
 });
+//   date: { type: Date, required: true },
+//   routines: { type: Schema.ObjectId, ref: 'Routine' },
+//   meals: { type: Schema.ObjectId, ref: 'Meal' },
+//   owner: { type: Schema.ObjectId, ref: 'UserModel', required: true }
+// }, { timestamps: true });
 
 const Progress = model("Progress", progressSchema);
 
