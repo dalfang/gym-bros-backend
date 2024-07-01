@@ -21,7 +21,7 @@ router.get("/all-progress", async (req, res) => {
 
 router.get("/one-progress/:progressId", async (req, res) => {
   try {
-    const oneProgress = await Meal.findById(req.params.progressId);
+    const oneProgress = await Progress.findById(req.params.progressId);
     res.status(200).json(oneProgress);
   } catch (error) {
     console.log(error);
@@ -41,9 +41,11 @@ router.patch("/update-progress/:progressId", async (req, res) => {
   }
 });
 
-router.delete("/delete-progress/progressId", async (req, res) => {
+router.delete("/delete-progress/:progressId", async (req, res) => {
     try {
-        const deletedProgress = await Meal.findByIdAndDelete(req.params.progressId);
+        const deletedProgress = await Progress.findByIdAndDelete(
+          req.params.progressId
+        );
         res.status(200).json({message: "Progress removed successfully"});
     } catch (error) {
         console.log(error);
