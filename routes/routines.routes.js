@@ -7,7 +7,9 @@ const mongoose = require('mongoose');
 router.post("/create-routine", async (req, res) => {
   try {
     const { userId, ...routineData } = req.body; 
+    console.log(req.body)
     const createdRoutine = await Routine.create({ ...routineData, owner: userId }); 
+
     res.status(201).json(createdRoutine);
   } catch (error) {
     console.error(error);
