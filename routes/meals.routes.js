@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 router.post("/create-meal", async (req, res) => {
   try {
     const { userId, ...mealData } = req.body; 
+    console.log(req.body)
     const createdMeal = await Meal.create({ ...mealData, owner: userId }); 
     res.status(201).json(createdMeal);
   } catch (error) {
@@ -74,7 +75,7 @@ router.patch("/update-meal/:mealId", async (req, res) => {
 });
 
 // Delete meal
-router.delete("/delete-meal/mealId", async (req, res) => {
+router.delete("/delete-meal/:mealId", async (req, res) => {
     try {
         const deletedMeal = await Meal.findByIdAndDelete(req.params.mealId);
         res.status(200).json({message: "Meal removed successfully"});

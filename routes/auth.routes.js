@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const UserModel = require("../models/User.model");
 const RoutineModel = require("../models/Routine.model");
+const MealModel = require("../models/Meal.model");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
@@ -91,9 +92,11 @@ router.get("/profile", isAuthenticated, async (req, res) => {
   try {
     const currentUser = await UserModel.findById(req.payload._id);
     const currentRoutine = await RoutineModel.find({ owner: req.payload._id });
+    const currentMeal = await MealModel.find({ owner: req.payload._id });
     console.log("current user", currentUser);
     console.log("current routine", currentRoutine);
-    res.status(200).json({currentUser, currentRoutine});
+    console.log("current meal", currentMeal);
+    res.status(200).json({currentUser, currentRoutine, currentMeal});
   } catch (error) {
     console.log(error);
   }
