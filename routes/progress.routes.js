@@ -2,12 +2,12 @@ const router = require("express").Router();
 const Progress = require("../models/Progress.model");
 const UserModel = require("../models/User.model");
 
-
 // Create progress
 router.post("/create-progress", async (req, res, next) => {
   try {
-    const progressData = { ...req.body };
-    const createdProgress = await Progress.create(progressData);
+    const { userId, ...progressData } = req.body;
+    const createdProgress = 
+      await Progress.create({ ...progressData, user: userId });
     res.status(201).json(createdProgress);
   } catch (error) {
     console.error(error);
@@ -19,7 +19,9 @@ router.post("/create-progress", async (req, res, next) => {
 router.get("/user-progress/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const userProgress = await Progress.find({ owner: userId }).populate('routines').populate('meals').populate('owner');
+    const userProgress = await Progress.find({ user: userId }).populate(
+      "user"
+    );
     res.status(200).json(userProgress);
   } catch (error) {
     console.error(error);
@@ -30,7 +32,7 @@ router.get("/user-progress/:userId", async (req, res) => {
 // Get all progress
 router.get("/all-progress", async (req, res, next) => {
   try {
-    const allProgress = await Progress.find().populate('routines').populate('meals').populate('owner');
+    const allProgress = await Progress.find().populate("user");
     res.status(200).json(allProgress);
   } catch (error) {
     console.error(error);
@@ -41,7 +43,9 @@ router.get("/all-progress", async (req, res, next) => {
 // Get one progress
 router.get("/one-progress/:progressId", async (req, res) => {
   try {
-    const progress = await Progress.findById(req.params.progressId).populate('routines').populate('meals').populate('owner');
+    const progress = await Progress.findById(req.params.progressId).populate(
+      "user"
+    );
     if (!progress) {
       return res.status(404).json({ message: "Progress not found" });
     }
@@ -55,7 +59,11 @@ router.get("/one-progress/:progressId", async (req, res) => {
 // Update progress
 router.patch("/update-progress/:progressId", async (req, res) => {
   try {
-    const updatedProgress = await Progress.findByIdAndUpdate(req.params.progressId, req.body, { new: true }).populate('routines').populate('meals').populate('owner');
+    const updatedProgress = await Progress.findByIdAndUpdate(
+      req.params.progressId,
+      req.body,
+      { new: true }
+    ).populate("user");
     if (!updatedProgress) {
       return res.status(404).json({ message: "Progress not found" });
     }
@@ -69,7 +77,9 @@ router.patch("/update-progress/:progressId", async (req, res) => {
 // Delete progress
 router.delete("/delete-progress/:progressId", async (req, res) => {
   try {
-    const deletedProgress = await Progress.findByIdAndDelete(req.params.progressId);
+    const deletedProgress = await Progress.findByIdAndDelete(
+      req.params.progressId
+    );
     if (!deletedProgress) {
       return res.status(404).json({ message: "Progress not found" });
     }
