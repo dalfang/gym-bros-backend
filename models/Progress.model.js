@@ -11,7 +11,7 @@ const { Schema, model } = mongoose;
 const progressSchema = new Schema({
   water: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   weight: {
@@ -21,17 +21,17 @@ const progressSchema = new Schema({
   },
   workout: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   sleep: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   walk: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   user: {

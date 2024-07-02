@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const UserModel = require("../models/User.model");
 const RoutineModel = require("../models/Routine.model");
-const ProgressModel = require("../models/Progress.model.js")
+const MealModel = require("../models/Meal.model");
+const ProgressModel = require("../models/Progress.model")
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
@@ -12,31 +13,32 @@ router.post("/signup", uploader.single("imageUrl"), async (req, res) => {
   if (req.file) {
     userImage = req.file.path;
   }
-  console.log("here is the file from cloudinary", req.file);
 
   try {
     const foundUser = await UserModel.findOne({
       $or: [{ username: req.body.username }, { email: req.body.email }],
     });
     if (foundUser) {
-      res.status(500).json({
-        errorMessage: "Please pick unique username and email",
+      return res.status(400).json({
+        errorMessage: "Username or email already exists. Please choose another one.",
       });
-    } else {
-      const salt = bcryptjs.genSaltSync(10);
-      const hashedPassword = bcryptjs.hashSync(req.body.password, salt);
-      const createdUser = await UserModel.create({
-        ...req.body,
-        password: hashedPassword,
-        userImage
-      });
-      console.log("User created", createdUser);
-      res.status(201).json(createdUser);
     }
+
+    const salt = bcryptjs.genSaltSync(10);
+    const hashedPassword = bcryptjs.hashSync(req.body.password, salt);
+    const createdUser = await UserModel.create({
+      ...req.body,
+      password: hashedPassword,
+      userImage
+    });
+    res.status(201).json(createdUser);
   } catch (error) {
-    console.log(error);
+    res.status(500).json({
+      errorMessage: "An error occurred while creating the user.",
+    });
   }
 });
+
 router.post("/login", async (req, res) => {
   try {
     const foundUser = await UserModel.findOne({ email: req.body.email });
@@ -92,10 +94,13 @@ router.get("/profile", isAuthenticated, async (req, res) => {
   try {
     const currentUser = await UserModel.findById(req.payload._id);
     const currentRoutine = await RoutineModel.find({ owner: req.payload._id });
-    const currentProgress = await ProgressModel.find({owner: req.payload._id});
+    const currentMeal = await MealModel.find({ owner: req.payload._id });
+    const currentProgress = await ProgressModel.find({ owner: req.payload._id });
     console.log("current user", currentUser);
     console.log("current routine", currentRoutine);
-    res.status(200).json({currentUser, currentRoutine, currentProgress});
+    console.log("current meal", currentMeal);
+    console.log("current progress", currentProgress);
+    res.status(200).json({currentUser, currentRoutine, currentMeal, currentProgress});
   } catch (error) {
     console.log(error);
   }
