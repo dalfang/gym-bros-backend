@@ -19,9 +19,7 @@ router.post("/create-progress", async (req, res, next) => {
 router.get("/user-progress/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const userProgress = await UserModel.find({ user: userId }).populate(
-      "user"
-    );
+    const userProgress = await Progress.find({ user: userId }).populate("user");
     res.status(200).json(userProgress);
   } catch (error) {
     console.error(error);
