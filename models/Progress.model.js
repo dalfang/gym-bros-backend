@@ -49,7 +49,6 @@ const progressSchema = new Schema({
 //   meals: { type: Schema.ObjectId, ref: 'Meal' },
 //   owner: { type: Schema.ObjectId, ref: 'UserModel', required: true }
 // }, { timestamps: true });
-
 const Progress = model("Progress", progressSchema);
 
 module.exports = Progress;
