@@ -98,7 +98,7 @@ router.get("/profile", isAuthenticated, async (req, res) => {
     const currentRoutine = await RoutineModel.find({ owner: req.payload._id });
     const currentMeal = await MealModel.find({ owner: req.payload._id });
     const currentProgress = await ProgressModel.find({ owner: req.payload._id });
-    const currentUpdateProgress = await UpdateProgressModelProgressModel.find({
+    const currentUpdateProgress = await UpdateProgressModel.find({
       owner: req.payload._id,
     });
     console.log("current user", currentUser);

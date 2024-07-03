@@ -11,7 +11,7 @@ const mealSchema = new Schema(
     calories: { type: Number },
     owner: { type: Schema.ObjectId, ref: "UserModel" },
     ingredients: [{ type: String }],
-    date: { type: Date },
+    date: { type: Date, default: Date.now },
 }, { timestamps: true });
 
 const Meal = model("Meal", mealSchema);
