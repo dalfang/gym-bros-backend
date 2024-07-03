@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 
-const progressSchema = new Schema({
+const updateProgressSchema = new Schema({
   water: {
     type: Number,
-    //required: true,
+    required: true,
     // default: 0,
   },
   weight: {
@@ -15,17 +15,17 @@ const progressSchema = new Schema({
   },
   workout: {
     type: Number,
-    //required: true,
+    required: true,
     // default: 0,
   },
   sleep: {
     type: Number,
-    //required: true,
+    required: true,
     // default: 0,
   },
   walk: {
     type: Number,
-    //required: true,
+    required: true,
     // default: 0,
   },
   user: {
@@ -39,6 +39,6 @@ const progressSchema = new Schema({
   },
 });
 
-const Progress = model("Progress", progressSchema);
+const UpdateProgress = model("UpdateProgress", updateProgressSchema);
 
-module.exports = Progress;
+module.exports = UpdateProgress;

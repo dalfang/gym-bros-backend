@@ -24,6 +24,8 @@ const mealsRoutes = require("./routes/meals.routes");
 app.use("/meals", mealsRoutes);
 const progressRoutes = require("./routes/progress.routes");
 app.use("/progress", progressRoutes);
+const updateProgressRoutes = require("./routes/updateProgress.routes");
+app.use("/updateProgress", updateProgressRoutes);
 const routinesRoutes = require("./routes/routines.routes");
 app.use("/routines", routinesRoutes);
 const workoutsRoutes = require("./routes/workouts.routes");
