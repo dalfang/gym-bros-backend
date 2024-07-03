@@ -51,6 +51,7 @@ router.post("/login", async (req, res) => {
         const loggedInUser = {
           _id: foundUser._id,
           username: foundUser.username,
+          userImage: foundUser.userImage
         };
         const authToken = jwt.sign(
           loggedInUser,
