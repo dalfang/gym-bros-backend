@@ -17,7 +17,7 @@ const userSchema = new Schema(
     userImage: {
       type: String,
       // default if user doesnt provide the user photo
-      default: "https://ibb.co/LPNCXMR"
+      default: "https://cdn-icons-png.flaticon.com/512/9187/9187604.png"
     },
     //routines: { 
     //  type: Schema.ObjectId, 
