@@ -1,14 +1,17 @@
 const router = require("express").Router();
 const Routine = require("../models/Routine.model");
 const mongoose = require('mongoose');
-
+const uploader = require('../middleware/cloudinary.config.js');
 
 // Create routine
-router.post("/create-routine", async (req, res) => {
+router.post("/create-routine", uploader.single("imageUrl"), async (req, res) => {
   try {
-    const { userId, ...routineData } = req.body; 
-    console.log(req.body)
-    const createdRoutine = await Routine.create({ ...routineData, owner: userId }); 
+    const { userId, ...routineData } = req.body;
+    let routineImage;
+    if (req.file) {
+      routineImage = req.file.path;
+    }
+    const createdRoutine = await Routine.create({ ...routineData, owner: userId, imageUrl: routineImage });
     res.status(201).json(createdRoutine);
   } catch (error) {
     console.error(error);
