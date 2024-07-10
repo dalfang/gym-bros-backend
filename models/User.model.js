@@ -1,6 +1,5 @@
 const { Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
 const userSchema = new Schema(
   {
     username: { type: String, required: true },
@@ -8,6 +7,8 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Email is required."],
       unique: true,
+      // ensures that any whitespace characters at the beginning and end of the string 
+      //are removed before saving the data to the database.
       trim: true,
     },
     password: {
@@ -16,18 +17,12 @@ const userSchema = new Schema(
     },
     userImage: {
       type: String,
-      // default if user doesnt provide the user photo
+      // default img if user does not provide profile photo
       default: "https://cdn-icons-png.flaticon.com/512/9187/9187604.png"
     },
-    //routines: { 
-    //  type: Schema.ObjectId, 
-    //  ref: 'Routine' },
-    //meals: {
-    //  type: Schema.ObjectId, 
-    //  ref: 'Meal' },
   }, 
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
+    // adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );

@@ -91,8 +91,8 @@ router.patch("/update-user/:id", async (req, res) => {
   }
 });
 
-//GET USER HERE
-router.get("/profile", isAuthenticated, async (req, res) => {
+//GET USER PROFILE
+router.get("/profile", isAuthenticated, async (req, res, next) => {
   try {
     const currentUser = await UserModel.findById(req.payload._id);
     const currentRoutine = await RoutineModel.find({ owner: req.payload._id });
@@ -109,6 +109,7 @@ router.get("/profile", isAuthenticated, async (req, res) => {
     res.status(200).json({currentUser, currentRoutine, currentMeal, currentProgress, currentUpdateProgress});
   } catch (error) {
     console.log(error);
+    next(error);
   }
 });
 
@@ -122,6 +123,7 @@ router.get('/all-users', async (req, res) => {
   }
 });
 
+//protected route
 
 router.get("/verify", isAuthenticated, (req, res) => {
   console.log("made it to the verify route", req.payload);

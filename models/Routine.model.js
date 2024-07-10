@@ -7,7 +7,6 @@ const routineSchema = new Schema({
   bodyPart: { type: String },
   totalDuration: { type: Number },
   date: { type: Date, required: true },
-  imageUrl: { type: String }, 
 }, { timestamps: true });
 
 const Routine = model("Routine", routineSchema);
