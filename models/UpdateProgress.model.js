@@ -5,27 +5,27 @@ const { Schema, model } = mongoose;
 const updateProgressSchema = new Schema({
   water: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   weight: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   workout: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   sleep: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   walk: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   user: {

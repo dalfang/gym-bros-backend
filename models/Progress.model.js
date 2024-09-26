@@ -10,7 +10,7 @@ const progressSchema = new Schema({
   },
   weight: {
     type: Number,
-    required: true,
+    //required: true,
     // default: 0,
   },
   workout: {
